@@ -8,6 +8,10 @@ services:
     working_dir: /var/www/html
 
     deploy:
+      resources:
+        limits:
+          cpus: '2.00'
+          memory: 2G
 
     ports:
       - 8080:80
