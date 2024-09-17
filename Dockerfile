@@ -21,6 +21,7 @@ RUN apt-get update -y && apt-get install -y \
 
 #composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+RUN composer install
 
 #php extention
 RUN docker-php-ext-install gettext intl pdo_mysql gd
@@ -29,22 +30,31 @@ RUN docker-php-ext-configure gd --enable-gd --with-freetype --with-jpeg \
     && docker-php-ext-install -j$(nproc) gd
 
 #add user untuk projek laravel-docker
-RUN groupadd -g 1000 www
-RUN useradd -u 1000 -ms /bin/bash -g www www
+# RUN groupadd -g 1000 www
+# RUN useradd -u 1000 -ms /bin/bash -g www www
 
 #tambahan
 # Create system user to run Composer and Artisan Commands
-RUN useradd -G www-data,root -u $uid -d /home/www www
-RUN mkdir -p /home/www/.composer && \
-    chown -R www:www /home/www
+# RUN useradd -G www-data,root -u $uid -d /home/www www
+# RUN mkdir -p /home/www/.composer && \
+#     chown -R www:www /home/www
+
+# Change ownership of our applications
+RUN chown -R www-data:www-data /var/www
+
 #end
 
-COPY . /var/www
 
-COPY --chown=www:www . /var/www
+COPY . .
+
+# COPY . /var/www
+# COPY --chown=www:www . /var/www
+# Copy over the .env file and generate the app key
+COPY .env.example .env
+RUN php artisan key:generate
 
 
-USER www
+# USER www
 
 EXPOSE 9000
 CMD ["php-fpm"]
