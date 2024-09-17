@@ -2,8 +2,8 @@ FROM php:8.2-fpm
 
 #tambahan
 # Arguments defined in docker-compose.yml
-ARG user
-ARG uid
+# ARG user
+# ARG uid
 #end
 
 WORKDIR /var/www
