@@ -1,0 +1,28 @@
+services:
+  laravel-11-sqlite:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+
+    container_name: laravel-11-sqlite
+    working_dir: /var/www/html
+
+    deploy:
+      resources:
+        limits:
+          cpus: '2.00'
+          memory: 2G
+
+    ports:
+      - 8080:80
+
+    volumes:
+      - ./apps/laravel-11-sqlite: /var/www/laravel-11-sqlite
+      - ./supervisor/supervisord.conf: /etc/supervisor/conf.d/supervisord.conf
+
+    networks:
+      - laravel-multi-services
+
+networks:
+  laravel-multi-services:
+    driver: bridge
